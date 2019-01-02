@@ -40,7 +40,7 @@ namespace PluginTest
             });
 
             var rootDir = new DirectoryInfo(_hostingEnvironment.ContentRootPath).Parent;
-            var dir = new DirectoryInfo(Path.Combine(rootDir.ToString(), "Plugin1", "bin", "Debug", "netstandard2.0"));
+            var dir = new DirectoryInfo(Path.Combine(rootDir.ToString(), "Plugin1", "bin", "Debug", "netcoreapp2.2"));
 
             foreach (var file in dir.GetFileSystemInfos("*.dll", SearchOption.TopDirectoryOnly))
             {
@@ -66,7 +66,7 @@ namespace PluginTest
 
             mvcBuilder.AddRazorOptions(o =>
             {
-                o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(Assembly.Load(new AssemblyName("Plugin1")).Location));
+               // o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(Assembly.Load(new AssemblyName("Plugin1")).Location));
             });
 
             var pluginAssembly = Assembly.Load(new AssemblyName("Plugin1"));
