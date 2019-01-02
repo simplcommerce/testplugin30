@@ -12,7 +12,7 @@ namespace PluginTest.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return Redirect("/plugin1");
         }
 
         public IActionResult Privacy()
