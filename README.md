@@ -2,7 +2,7 @@
 
 Dynamic load plugin1 (razor class library) into the PluginTest.
 
-On the PluginTest overide some views in the plugin 1.
+On the PluginTest override some views in the plugin 1.
 
 Uncomment line 69 in Startup.cs 
 
