@@ -42,7 +42,7 @@ namespace PluginTest
             var rootDir = new DirectoryInfo(_hostingEnvironment.ContentRootPath).Parent;
             var dir = new DirectoryInfo(Path.Combine(rootDir.ToString(), "Plugin1", "bin", "Debug", "netstandard2.0"));
 
-            foreach (var file in dir.GetFileSystemInfos("*.dll", SearchOption.AllDirectories))
+            foreach (var file in dir.GetFileSystemInfos("*.dll", SearchOption.TopDirectoryOnly))
             {
                 Assembly assembly;
                 try
