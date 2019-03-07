@@ -39,52 +39,44 @@ namespace PluginTest
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            var rootDir = new DirectoryInfo(_hostingEnvironment.ContentRootPath).Parent;
-            var dir = new DirectoryInfo(Path.Combine(rootDir.ToString(), "Plugin1", "bin", "Debug", "netcoreapp2.2"));
+            //var rootDir = new DirectoryInfo(_hostingEnvironment.ContentRootPath).Parent;
+            //var dir = Path.Combine(rootDir.ToString(), "Plugin1", "bin", "Debug", "netcoreapp3.0");
 
-            foreach (var file in dir.GetFileSystemInfos("*.dll", SearchOption.TopDirectoryOnly))
-            {
-                Assembly assembly;
-                try
-                {
-                    assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
-                }
-                catch (FileLoadException)
-                {
-                    // Get loaded assembly. This assembly might be loaded
-                    assembly = Assembly.Load(new AssemblyName(Path.GetFileNameWithoutExtension(file.Name)));
+            //var pluginContext = new PluginLoadContext(Path.Combine(dir, "Plugin1.dll"));
+            //Assembly pluginAssembly = pluginContext.LoadFromAssemblyName(new AssemblyName("Plugin1"));
 
-                    if (assembly == null)
-                    {
-                        throw;
-                    }
-                }
-            }
+            //var plugin = new Plugin
+            //{
+            //    Assembly = pluginAssembly,
+            //    PluginLoadContext = pluginContext
+            //};
+            //Global.Plugins.Add(plugin);
 
 
-            var mvcBuilder = services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            var mvcBuilder = services.AddMvc().AddNewtonsoftJson();
+            Global.MvcBuilder = mvcBuilder;
+
 
             mvcBuilder.AddRazorOptions(o =>
             {
                // o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(Assembly.Load(new AssemblyName("Plugin1")).Location));
             });
 
-            var pluginAssembly = Assembly.Load(new AssemblyName("Plugin1"));
-            var partFactory = ApplicationPartFactory.GetApplicationPartFactory(pluginAssembly);
-            foreach (var part in partFactory.GetApplicationParts(pluginAssembly))
-            {
-                mvcBuilder.PartManager.ApplicationParts.Add(part);
-            }
+            //var partFactory = ApplicationPartFactory.GetApplicationPartFactory(pluginAssembly);
+            //foreach (var part in partFactory.GetApplicationParts(pluginAssembly))
+            //{
+            //    mvcBuilder.PartManager.ApplicationParts.Add(part);
+            //}
 
-            var relatedAssemblies = RelatedAssemblyAttribute.GetRelatedAssemblies(pluginAssembly, throwOnError: true);
-            foreach (var assembly in relatedAssemblies)
-            {
-                partFactory = ApplicationPartFactory.GetApplicationPartFactory(assembly);
-                foreach (var part in partFactory.GetApplicationParts(assembly))
-                {
-                    mvcBuilder.PartManager.ApplicationParts.Add(part);
-                }
-            }
+            //var relatedAssemblies = RelatedAssemblyAttribute.GetRelatedAssemblies(pluginAssembly, throwOnError: true);
+            //foreach (var assembly in relatedAssemblies)
+            //{
+            //    partFactory = ApplicationPartFactory.GetApplicationPartFactory(assembly);
+            //    foreach (var part in partFactory.GetApplicationParts(assembly))
+            //    {
+            //        mvcBuilder.PartManager.ApplicationParts.Add(part);
+            //    }
+            //}
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -103,14 +95,22 @@ namespace PluginTest
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
+            app.UseRouting(routes =>
             {
-                routes.MapRoute(
+                routes.MapControllerRoute(
+                  name: "MyArea",
+                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapControllerRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRazorPages();
             });
+
+            app.UseCookiePolicy();
+
+            app.UseAuthorization();
         }
     }
 }

@@ -1,8 +1,60 @@
-﻿@{
+﻿@model FeaturesViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Features</h1>
+
+<b>Controllers:</b>
+<div class="pre-scrollable" style="max-height:100px">
+    <ul>
+        @foreach (var item in Model.Controllers)
+        {
+            <li>@item.Name</li>
+        }
+    </ul>
 </div>
+
+<b>Metadata References:</b>
+<div class="pre-scrollable" style="max-height: 100px">
+    <ul>
+        @foreach (var item in Model.MetadataReferences)
+        {
+            <li>@item.Display</li>
+        }
+    </ul>
+</div>
+
+<b>Tag Helpers:</b>
+<div class="pre-scrollable" style="max-height: 100px">
+    <ul>
+        @foreach (var item in Model.TagHelpers)
+        {
+            <li>@item.Name</li>
+        }
+    </ul>
+</div>
+<b>View Components:</b>
+<div class="pre-scrollable" style="max-height: 100px">
+    <ul>
+        @foreach (var item in Model.TagHelpers)
+        {
+            <li>@item.Name</li>
+        }
+    </ul>
+</div>
+
+<b>Routes</b>
+<div class="pre-scrollable" style="max-height: 100px">
+    <ul>
+        @foreach (var item in Model.Routes)
+        {
+            <li>@item</li>
+        }
+    </ul>
+</div>
+
+<form asp-controller="Home" asp-action="RemovePlugin" method="post">
+    <button type="submit">Submit</button>
+</form>
